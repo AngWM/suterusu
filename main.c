@@ -9,10 +9,6 @@
 #include <net/udp.h>
 #include <linux/init.h>
 
-#define TMPSZ 150
-#define TMPUSZ 128
-#define TMP6SZ 166
-
 static int (*inet_ioctl)(struct socket *, unsigned int, unsigned long);
 static int (*tcp4_seq_show)(struct seq_file *seq, void *v);
 static int (*tcp6_seq_show)(struct seq_file *seq, void *v);
